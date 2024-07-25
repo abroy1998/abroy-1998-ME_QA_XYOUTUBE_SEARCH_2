@@ -8,10 +8,43 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 
 public class Wrappers {
-    /*
-     * Write your selenium wrappers here
-     */
+
+    WebDriver driver;
+    WebDriverWait wait;
+
+    public Wrappers(WebDriver driver, WebDriverWait wait) {
+        this.driver = driver;
+        this.wait = wait;
+        //.driver = driver;
+    }
+
+    public void openYoutube() {
+        driver.get("https://www.youtube.com/");
+    }
+
+    public void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    public void clickOnSideBar(String title) {
+
+        WebElement selectingMovies = wait.until(
+                ExpectedConditions.
+                        presenceOfElementLocated(
+                                By.xpath("//yt-formatted-string[text()='"+title+"']")));
+        selectingMovies.click();
+
+
+
+    }
+
 }
