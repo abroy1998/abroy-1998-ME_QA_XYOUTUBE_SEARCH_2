@@ -57,8 +57,8 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
 
         driver = new ChromeDriver(options);
 
-        wait = new WebDriverWait(driver,Duration.ofSeconds(30));
-        wrappers = new Wrappers(driver,wait);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        wrappers = new Wrappers(driver, wait);
         softAssert = new SoftAssert();
 
         driver.manage().window().maximize();
@@ -77,10 +77,10 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
 
         wrappers.openYoutube();
 
-        String actualUrl= driver.getCurrentUrl();
+        String actualUrl = driver.getCurrentUrl();
         String expectedUrl = "https://www.youtube.com/";
-        softAssert.assertEquals(expectedUrl,actualUrl);
-        System.out.println("Step 1 : Verify correct URL" + (actualUrl.contains(expectedUrl)?":-PASS":"FAIL"));
+        softAssert.assertEquals(expectedUrl, actualUrl);
+        System.out.println("Step 1 : Verify correct URL" + (actualUrl.contains(expectedUrl) ? ":-PASS" : "FAIL"));
 
         WebElement about = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[text()='About']")));
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -121,24 +121,92 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
         WebElement rating = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("(//p[@class='style-scope ytd-badge-supported-renderer'])[32]")));
         String ratingText = rating.getText();
 
-        softAssert.assertTrue(ratingText.contains("A"),"The movie is not marked as “A” ");
-        System.out.println("Step 2 : Verify the movie rating is A" + (ratingText.contains("A")?":- PASS":" FAIL"));
+        softAssert.assertTrue(ratingText.contains("A"), "The movie is not marked as “A” ");
+        System.out.println("Step 2 : Verify the movie rating is A" + (ratingText.contains("A") ? ":- PASS" : " FAIL"));
         System.out.println(ratingText);
         wrappers.sleep(10000);
 
 
         WebElement movieCategory = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("(//span[contains(text(),'Drama')])[3]")));
-        String movieCategoryValue= movieCategory.getText();
+        String movieCategoryValue = movieCategory.getText();
 
         softAssert.assertTrue(
-                movieCategoryValue.contains("Comedy")||
+                movieCategoryValue.contains("Comedy") ||
                         movieCategoryValue.contains("Animation"),
                 "The movie neither “Comedy” or “Animation”");
-        System.out.println("Step 3 : The movie neither “Comedy” or “Animation”" + (movieCategoryValue.contains("comedy")||
-                movieCategoryValue.contains("Animation")?":- PASS":"FAIL"));
+        System.out.println("Step 3 : The movie neither “Comedy” or “Animation”" + (movieCategoryValue.contains("comedy") ||
+                movieCategoryValue.contains("Animation") ? ":- PASS" : ":- FAIL"));
 
         wrappers.sleep(20000);
 
     }
+
+    @Test
+    public void testCase03() {
+
+        wrappers.openYoutube();
+        wrappers.clickOnSideBar("Music");
+
+//        WebElement about = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("(//span[@id='title'])[2]")));
+//        JavascriptExecutor js = (JavascriptExecutor) driver;
+        wrappers.sleep(1000);
+//        js.executeScript("arguments[0].scrollIntoView();", about);
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,250)", "");
+
+//        WebElement scroll = wait.until(ExpectedConditions.elementToBeClickable(
+//                By.xpath("(//div[@class='yt-spec-touch-feedback-shape__fill'])[8]")));
+        WebElement scroll = driver.findElement(By.xpath("(//div[@class='yt-spec-touch-feedback-shape__fill'])[8]"));
+        scroll.click();
+        wrappers.sleep(1000);
+        scroll.click();
+        wrappers.sleep(1000);
+        scroll.click();
+        wrappers.sleep(2000);
+
+        WebElement nameofThePlayList = driver.findElement(By.xpath("//*[@id=\"items\"]/ytd-compact-station-renderer[11]/div/a/h3"));
+        wrappers.sleep(2000);
+        //*[@id="items"]/ytd-compact-station-renderer[11]/div/a/h3
+        String playList = nameofThePlayList.getText();
+        wrappers.sleep(2000);
+
+//        wrappers.sleep(1000);
+        System.out.println("Name of the playlist is :- " + playList);
+        wrappers.sleep(2000);
+
+        WebElement tracks = driver.findElement(By.xpath("(//p[@id='video-count-text'])[11]"));
+        wrappers.sleep(2000);
+
+        int tracksCount = wrappers.getNumberFromText(tracks.getText());
+        softAssert.assertTrue(tracksCount<=50,"Tracks count is grater then 50");
+        System.out.println(tracksCount + " Is less then equal 50" + ((tracksCount<=50) ? ": YES": ": No"));
+
+        wrappers.sleep(200000);
+
+
+
+//    }
+
+
+//    @Test
+//    public void testCase03() {
+//        wrappers.openYoutube();
+//        wrappers.clickOnSideBar("Music");
+//        wrappers.sleep(20000);
+//
+//        JavascriptExecutor js = (JavascriptExecutor) driver;
+//        js.executeScript("window.scrollBy(0,250)", "");
+//
+//        WebElement scroll = driver.findElement(By.xpath("(//div[@class='yt-spec-touch-feedback-shape__fill'])[8]"));
+////
+////        while (scroll.isDisplayed()) {
+////            scroll.click();
+////            wrappers.sleep(1000);
+////        }
+
+
+    }
+
 
 }

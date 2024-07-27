@@ -47,4 +47,18 @@ public class Wrappers {
 
     }
 
+    public int getNumberFromText(String imp){
+        StringBuilder rev = new StringBuilder();
+        for (int i = 0; i < imp.length(); i++){
+
+            if (Character.isDigit(imp.charAt(i)))
+                rev.append(imp.charAt(i));
+        }
+
+        if (rev.length() > 0){
+            return Integer.parseInt(rev.toString());
+        }else
+            return 0    ;
+    }
+
 }
