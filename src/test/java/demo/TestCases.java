@@ -16,6 +16,8 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import demo.utils.ExcelDataProvider;
@@ -99,7 +101,6 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
             assert false;
         }
 
-        wrappers.sleep(20000);
         System.out.println("test case 1: - PASS");
 
     }
@@ -137,7 +138,6 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
         System.out.println("Step 3 : The movie neither “Comedy” or “Animation”" + (movieCategoryValue.contains("comedy") ||
                 movieCategoryValue.contains("Animation") ? ":- PASS" : ":- FAIL"));
 
-        wrappers.sleep(20000);
 
     }
 
@@ -182,31 +182,103 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
         softAssert.assertTrue(tracksCount<=50,"Tracks count is grater then 50");
         System.out.println(tracksCount + " Is less then equal 50" + ((tracksCount<=50) ? ": YES": ": No"));
 
-        wrappers.sleep(200000);
+//        wrappers.sleep(200000);
+
+    }
 
 
 
-//    }
+    @Test
+    public void testCase04(){
+        wrappers.openYoutube();
+        wrappers.clickOnSideBar("News");
+        wrappers.scrollToItem("Latest news posts");
 
 
-//    @Test
-//    public void testCase03() {
-//        wrappers.openYoutube();
-//        wrappers.clickOnSideBar("Music");
-//        wrappers.sleep(20000);
-//
-//        JavascriptExecutor js = (JavascriptExecutor) driver;
-//        js.executeScript("window.scrollBy(0,250)", "");
-//
-//        WebElement scroll = driver.findElement(By.xpath("(//div[@class='yt-spec-touch-feedback-shape__fill'])[8]"));
-////
-////        while (scroll.isDisplayed()) {
-////            scroll.click();
-////            wrappers.sleep(1000);
-////        }
+        List<WebElement> posts = driver.findElements(By.xpath("//ytd-post-renderer[@class='style-scope ytd-rich-item-renderer']"));
+
+
+        int votes = 0;
+
+        for (WebElement post : posts){
+            WebElement header = post.findElement(By.id("header"));
+            WebElement body = post.findElement(By.id("body"));
+
+            System.out.println("header : " + header.getText());
+            System.out.println("body : " +body.getText());
+
+            try {
+                WebElement voteCountElement = post.findElement(By.id("vote-count-middle"));
+                votes += Integer.parseInt(voteCountElement.getText());
+            }catch (Exception e){
+                System.out.println("Cannot get vote count for "+ header.getText());
+            }
+        }
+
+        System.out.println(votes);
 
 
     }
+
+
+    @Test
+    public void testCase05(){
+        List<String> searchItems = new ArrayList<>();
+        Object[][] excelData = excelData();
+
+        for (Object[] objArr : excelData){
+            for(Object obj : objArr){
+                    searchItems.add(obj.toString());
+            }
+        }
+
+        for(String searchTerm : searchItems){
+            System.out.println(searchTerm);
+            wrappers.openYoutube();
+            wrappers.searchYoutube(searchTerm);
+
+            List<WebElement> viewItems = wrappers.getVideoElements();
+            //System.out.println(viewItems.size());
+
+
+            int i = 0;
+            double sum = 0;
+//            while (sum < 10_00_00_000.0){
+            while (sum < 10_000.0){
+                WebElement vidContainer = viewItems.get(i);
+
+                String vidTitle = vidContainer.findElement(By.xpath("//yt-formatted-string[@class='style-scope ytd-video-renderer']")).getText();
+                WebElement view = vidContainer.findElement(By.xpath("//span[@class=\"inline-metadata-item style-scope ytd-video-meta-block\"]"));
+
+                System.out.println(i + ":"+vidTitle +":"+view.getText());
+
+
+
+                sum += wrappers.getViewCount(view);
+
+                System.out.println(sum);
+
+
+                i++;
+
+                if (i == (viewItems.size()-1)){
+                    wrappers.sleep(5000);
+                    wrappers.scrollToItem(view);
+                    viewItems = wrappers.getVideoElements();
+                    i = 0;
+                }
+
+            }
+
+
+
+        }
+
+
+
+    }
+
+
 
 
 }
