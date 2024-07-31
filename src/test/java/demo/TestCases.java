@@ -15,9 +15,12 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import demo.utils.ExcelDataProvider;
@@ -232,31 +235,36 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
             }
         }
 
+
         for(String searchTerm : searchItems){
             System.out.println(searchTerm);
             wrappers.openYoutube();
             wrappers.searchYoutube(searchTerm);
 
             List<WebElement> viewItems = wrappers.getVideoElements();
-            //System.out.println(viewItems.size());
+            System.out.println(viewItems.size());
+            Map<String,Double> vidView = new HashMap<>();
 
 
             int i = 0;
             double sum = 0;
-//            while (sum < 10_00_00_000.0){
-            while (sum < 10_000.0){
+            while (sum < 10_00_00_000.0){
+//            while (sum < 10_000_00.0){
                 WebElement vidContainer = viewItems.get(i);
 
-                String vidTitle = vidContainer.findElement(By.xpath("//yt-formatted-string[@class='style-scope ytd-video-renderer']")).getText();
-                WebElement view = vidContainer.findElement(By.xpath("//span[@class=\"inline-metadata-item style-scope ytd-video-meta-block\"]"));
+                String vidTitle = vidContainer.findElement(By.xpath(".//yt-formatted-string[@class='style-scope ytd-video-renderer']")).getText();
+                WebElement view = vidContainer.findElement(By.xpath(".//span[@class=\"inline-metadata-item style-scope ytd-video-meta-block\"]"));
 
-                System.out.println(i + ":"+vidTitle +":"+view.getText());
+                //System.out.println(i + ":"+vidTitle +":"+view.getText());
 
+                double viewCount = wrappers.getViewCount(view);
 
+                if (!vidView.containsKey(vidTitle)) {
+                    sum += viewCount;
+                    vidView.put(vidTitle,viewCount);
+                }
 
-                sum += wrappers.getViewCount(view);
-
-                System.out.println(sum);
+//                System.out.println(sum);
 
 
                 i++;
@@ -269,6 +277,8 @@ public class TestCases extends ExcelDataProvider { // Lets us read the data
                 }
 
             }
+
+            System.out.println("Reached 10Cr for " + searchTerm + "-> Total Count = " + new DecimalFormat("#").format(sum));
 
 
 

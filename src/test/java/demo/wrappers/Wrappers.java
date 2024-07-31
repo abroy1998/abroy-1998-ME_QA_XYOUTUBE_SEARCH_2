@@ -88,7 +88,8 @@ public class Wrappers {
     public List<WebElement> getVideoElements(){
         WebElement rootDiv = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//ytd-item-section-renderer[@class='style-scope ytd-section-list-renderer']")));
 
-        return rootDiv.findElements(By.xpath("//ytd-video-renderer[@class='style-scope ytd-item-section-renderer']"));
+//       return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//ytd-video-renderer[@class='style-scope ytd-item-section-renderer']")));
+        return driver.findElements(By.xpath("//ytd-video-renderer[@class='style-scope ytd-item-section-renderer']"));
     }
 
     public double getViewCount(WebElement view){
